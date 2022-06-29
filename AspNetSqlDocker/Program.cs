@@ -2,14 +2,19 @@ using AspNetSqlDocker.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionstring = "Server=sqldata;Database=FilmDB;User ID=sa;Password=2Secure*Password2 ";
+builder.Services.AddDbContext<FilmContext>(filmOpt =>
+    filmOpt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<FilmContext>(filmOpt =>
-    filmOpt.UseSqlServer(connectionstring, options=>options.MigrationsAssembly("AspNetSqlDocker")));
+
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetService<FilmContext>();
+    context?.Database?.Migrate();
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -18,6 +23,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+    
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
