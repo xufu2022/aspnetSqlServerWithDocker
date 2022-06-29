@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<FilmContext>(filmOpt =>
-    filmOpt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    filmOpt.UseSqlServer(builder.Configuration["FilmConnection"]));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

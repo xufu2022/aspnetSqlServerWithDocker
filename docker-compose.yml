@@ -1,8 +1,14 @@
 version: '3.4'
 
 services:
-  sqldata:
-    image: mcr.microsoft.com/mssql/server:2019-latest 
+  sqldbService:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "BigPassw0rd"
+    ports:
+      - "1403:1433"
 
   aspnetsqldocker:
     image: ${DOCKER_REGISTRY-}aspnetsqldocker
@@ -10,4 +16,4 @@ services:
       context: .
       dockerfile: AspNetSqlDocker/Dockerfile
     depends_on:
-      - sqldata
+      - sqldbService
